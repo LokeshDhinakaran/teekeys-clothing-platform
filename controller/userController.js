@@ -1,0 +1,63 @@
+const bcrypt = require('bcrypt');
+const jwt = require("jsonwebtoken")
+const userModel =  require("../models/user.js");
+const {generateToken} = require("../middleware/generateToken.js")
+exports.signUp = async (req,res)=>{
+    try {
+        let{fullname, email , password} = req.body;
+        if(!fullname || !email || !password){
+            return res.status(400).json({message:"All fields are required"})
+        }
+        let user= await userModel.findOne({email:email});
+        if(user) {
+            return res.status(409).json({message:"User already exists"})
+        }
+        bcrypt.genSalt(10 , function (err,salt) {
+            bcrypt.hash(password,salt, async function (err,hash){
+                if(err) {
+                    return res.status(401).json({message:err.message})
+                }
+                
+                let user = await userModel.create({
+                    fullname,
+                    password:hash,
+                    email,
+                })
+                let token = generateToken(user);
+                res.cookie("token", token, { httpOnly: true });
+                return res.status(201).json({message:"Successful the user has been created"})
+            })
+        })
+    
+    } catch (error) {
+        return res.status(500).json({message:error.message});
+    }
+}
+
+exports.login = async(req,res)=>{
+    try {
+        let { email , password} = req.body;
+        let user  = await userModel.findOne({email: email})
+        if(!user){
+            return res.status(404).json({message:"User does not exist"})
+        }
+        bcrypt.compare(password,user.password ,function(err,result){
+            if(result){
+                let token = generateToken(user);
+                res.cookie("token", token, { httpOnly: true });
+                return res.status(200).json({message:"Logged in successfully"})
+            }if(err){
+                return res.status(404).json({message:"Invalid email or pass"})
+            }
+        })
+    } catch (error) {
+        return res.status(501).json({message:error.message})
+    }
+}
+
+exports.logout = async function (req , res) {
+    res.cookie("token", "", { expires: new Date(0) });
+    return res.json({message: "Logged out successfully."});
+}
+
+
