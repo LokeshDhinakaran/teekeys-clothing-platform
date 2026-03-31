@@ -66,7 +66,7 @@ exports.wishlistAdd = async function (req,res) {
         const {productId} = req.body;
         const user = await userModel.findById(userId);
         if(!user){
-            return res.status(404).message({message:"User not found"})
+            return res.status(404).json({message:"User not found"})
         }
         if (user.wishlist.includes(productId)) {
             return res.status(400).json({ message: "Already in wishlist" });
@@ -83,7 +83,7 @@ exports.wishlistAdd = async function (req,res) {
     }
 }
 
-exports.wishlistRrmove = async function(req,res){
+exports.wishlistRemove = async function(req,res){
     try {
         const userId= req.user.id;
         const {productId} = req.body;

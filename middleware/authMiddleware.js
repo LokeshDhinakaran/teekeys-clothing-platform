@@ -1,8 +1,8 @@
 const jwt = require('jsonwebtoken')
 
-module.exports = function(req,next,res){
+module.exports = function(req,res,next){
     try {
-        const token = req.cookie.token;
+        const token = req.cookies.token;
         if (!token) {
         return res.status(401).json({ message: "Not logged in" });
         }

@@ -11,7 +11,7 @@ const userSchema = new mongoose.Schema({
     password:String,
     wishlist:[
         {
-            default:mongoose.Schema.Types.ObjectId,
+            type:mongoose.Schema.Types.ObjectId,
             ref:"products"
         } 
     ],
