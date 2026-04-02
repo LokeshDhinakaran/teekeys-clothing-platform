@@ -100,3 +100,75 @@ exports.createProduct = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+
+exports.updateProduct= async(req,res)=>{
+  try {
+    const product = await Products.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {new:true},
+    )
+    if(!product){
+      return res.status(404).json({message:"Product not found"});
+    }
+    res.json(product);
+  } catch (error) {
+    return res.status(500).json({message:error.message});
+  }
+}
+
+
+exports.deleteProduct = async(req,res)=>{
+  try {
+    const product = await Products.findByIdAndDelete(req.params.id);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+    return res.json({ message: "Product deleted" });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getCategories = async(req,res)=>{
+  try {
+    const categories = await Products.distinct("category");
+    if(!categories){
+      return res.status(404).json({message:"No Categories found"})
+    }
+    return res.json(categories);
+  } catch (error) {
+    return res.status(500).json({message:error.message})
+  }
+};
+
+exports.getByCategory= async(req,res)=>{
+  try {
+    const products = await Products.find({
+      category:req.params.category
+    })
+    if(!products){
+      return res.status(404).json({message:"Products not found under the category"})
+    }
+    return res.json(products)
+  } catch (error) {
+    return res.status(500).json({message:error.message})
+  }
+
+};
+
+exports.searchProducts = async (req, res) => {
+  try {
+    const query = req.query.q;
+    const products = await Products.find({
+      $or: [
+        { title: { $regex: query, $options: "i" } },
+        { category: { $regex: query, $options: "i" } }
+      ]
+    });
+    res.json(products);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
