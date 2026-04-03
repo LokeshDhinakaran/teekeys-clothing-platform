@@ -4,11 +4,7 @@ const{v4 : uuidv4} = require("uuid");
 
 
 const productSchema = new mongoose.Schema({
-    id:{
-        type : String,
-        default : uuidv4,
-        unique: true
-    },
+   
     title : String,
     description : String,
     category : String,

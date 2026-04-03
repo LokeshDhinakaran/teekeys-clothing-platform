@@ -81,13 +81,21 @@ exports.createProduct = async (req, res) => {
         }))
       : [];
 
+      const sizes = req.body.sizes
+     ? JSON.parse(req.body.sizes)
+    : [];
+
     const product = new Products({
       title: req.body.title,
+      description: req.body.description,
       category: req.body.category,
       price: req.body.price,
+      brand: req.body.brand,
+      availability: req.body.availability,
+      sizes,
       thumbnail,
       images
-    });
+});
 
     await product.save();
 
