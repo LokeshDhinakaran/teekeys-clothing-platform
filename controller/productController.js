@@ -1,7 +1,7 @@
-const Products = require("../models/products");
-const cloudinary = require("../config/cloudinary");
+import Products from "../models/products.js";
+import cloudinary from "../config/cloudinary.js";
 
-exports.getAllProducts = async (req, res) => {
+export const getAllProducts = async (req, res) => {
   try {
     const { Page = 1, Limit = 5, category, minPrice, maxPrice } = req.query;
 
@@ -53,9 +53,9 @@ exports.getAllProducts = async (req, res) => {
 };
 
 
-exports.getProductById = async (req, res) => {
+export const getProductById = async (req, res) => {
   try {
-    const product = await Products.findOne({ id: req.params.id });
+    const product = await Products.findById(req.params.id);
     if(!product) {
       return res.status(404).json({message:"Product not found"})
     }
@@ -65,7 +65,7 @@ exports.getProductById = async (req, res) => {
   }
 };
 
-exports.createProduct = async (req, res) => {
+export const createProduct = async (req, res) => {
   try {
     if (!req.files || !req.files.thumbnail) {
       return res.status(400).json({ error: "Thumbnail required" });
@@ -110,7 +110,7 @@ exports.createProduct = async (req, res) => {
 };
 
 
-exports.updateProduct= async(req,res)=>{
+export const updateProduct = async(req,res) => {
   try {
     const product = await Products.findByIdAndUpdate(
       req.params.id,
@@ -127,7 +127,7 @@ exports.updateProduct= async(req,res)=>{
 }
 
 
-exports.deleteProduct = async(req,res)=>{
+export const deleteProduct = async(req,res) => {
   try {
     const product = await Products.findByIdAndDelete(req.params.id);
     if (!product) {
@@ -139,7 +139,7 @@ exports.deleteProduct = async(req,res)=>{
   }
 };
 
-exports.getCategories = async(req,res)=>{
+export const getCategories = async(req,res) => {
   try {
     const categories = await Products.distinct("category");
     if(!categories){
@@ -151,7 +151,7 @@ exports.getCategories = async(req,res)=>{
   }
 };
 
-exports.getByCategory= async(req,res)=>{
+export const getByCategory = async(req,res) => {
   try {
     const products = await Products.find({
       category:req.params.category
@@ -166,7 +166,7 @@ exports.getByCategory= async(req,res)=>{
 
 };
 
-exports.searchProducts = async (req, res) => {
+export const searchProducts = async (req, res) => {
   try {
     const query = req.query.q;
     const products = await Products.find({

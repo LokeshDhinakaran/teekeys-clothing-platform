@@ -1,8 +1,9 @@
-const bcrypt = require('bcrypt');
-const jwt = require("jsonwebtoken")
-const userModel =  require("../models/user.js");
-const {generateToken} = require("../middleware/generateToken.js")
-exports.signUp = async (req,res)=>{
+import bcrypt from 'bcrypt';
+import jwt from "jsonwebtoken";
+import userModel from "../models/user.js";
+import { generateToken } from "../middleware/generateToken.js";
+
+export const signUp = async (req,res) =>{
     try {
         let{fullname, email , password} = req.body;
         if(!fullname || !email || !password){
@@ -32,9 +33,9 @@ exports.signUp = async (req,res)=>{
     } catch (error) {
         return res.status(500).json({message:error.message});
     }
-}
+};
 
-exports.login = async(req,res)=>{
+export const login = async(req,res) =>{
     try {
         let { email , password} = req.body;
         let user  = await userModel.findOne({email: email})
@@ -53,14 +54,14 @@ exports.login = async(req,res)=>{
     } catch (error) {
         return res.status(501).json({message:error.message})
     }
-}
+};
 
-exports.logout = async function (req , res) {
+export async function logout(req , res) {
     res.cookie("token", "", { expires: new Date(0) });
     return res.json({message: "Logged out successfully."});
-}
+};
 
-exports.wishlistAdd = async function (req,res) {
+export async function wishlistAdd(req,res) {
     try {
         const userId= req.user.id;
         const {productId} = req.body;
@@ -81,9 +82,9 @@ exports.wishlistAdd = async function (req,res) {
     } catch (error) {
         return res.status(500).json({ message:error.message });
     }
-}
+};
 
-exports.wishlistRemove = async function(req,res){
+export async function wishlistRemove(req,res) {
     try {
         const userId= req.user.id;
         const {productId} = req.body;

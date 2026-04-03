@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const config = require("config");
+import mongoose from "mongoose";
+import config from "config";
 
 let dbURI;
 
@@ -14,4 +14,4 @@ mongoose.connect(dbURI)
     console.log("❌ DB Connection Error:", err);
   });
 
-module.exports = mongoose.connection;
+export default mongoose.connection;

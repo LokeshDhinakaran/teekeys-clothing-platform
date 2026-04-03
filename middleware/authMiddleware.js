@@ -1,6 +1,6 @@
-const jwt = require('jsonwebtoken')
+import jwt from 'jsonwebtoken';
 
-module.exports = function(req,res,next){
+export default function(req,res,next){
     try {
         const token = req.cookies.token;
         if (!token) {

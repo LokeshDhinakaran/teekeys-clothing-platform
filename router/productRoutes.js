@@ -1,9 +1,10 @@
-const express = require("express");
+import express from "express";
+import authMiddleware from '../middleware/authMiddleware.js';
+import adminMiddleware from '../middleware/adminMiddleware.js';
+import upload from "../middleware/upload.js";
+import * as productController from "../controller/productController.js";
+
 const router = express.Router();
-const authMiddleware= require('../middleware/authMiddleware.js')
-const adminMiddleware = require('../middleware/adminMiddleware.js')
-const upload = require("../middleware/upload");
-const productController = require("../controller/productController");
 
 router.get("/products", productController.getAllProducts);
 
@@ -38,4 +39,5 @@ router.get("/categories", productController.getCategories)
 router.get("/categories/:category", productController.getByCategory)
 
 router.get("/search", productController.searchProducts);
-module.exports = router;
+
+export default router;

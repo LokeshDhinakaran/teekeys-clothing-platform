@@ -1,14 +1,11 @@
-require("dotenv").config();
-const express = require("express");
+import "dotenv/config.js";
+import express from "express";
+import cookieParser from "cookie-parser";
+import "./config/mongoose-connection.js";
+import userRoutes from "./router/userRoutes.js";
+import productRoutes from "./router/productRoutes.js";
+
 const app = express();
-const cookieParser = require("cookie-parser");
-require("./config/mongoose-connection");
-
-
-
-const userRoutes = require("./router/userRoutes")
-
-const productRoutes = require("./router/productRoutes");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

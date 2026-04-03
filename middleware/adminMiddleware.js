@@ -1,4 +1,4 @@
-module.exports = function(req,res,next) {
+export default function(req,res,next) {
     try {
         if(!req.user || req.user.role!=="admin"){
             return res.status(403).json({message:"Access Denied only admin can accesss"})
