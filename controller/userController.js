@@ -46,7 +46,11 @@ export const login = async(req,res) =>{
             if(result){
                 let token = generateToken(user);
                 res.cookie("token", token, { httpOnly: true });
-                return res.status(200).json({message:"Logged in successfully"})
+                return res.status(200).json({message:"Logged in successfully",user: {
+                _id: user._id,
+                name: user.name,
+                email: user.email
+            }});
             }if(err){
                 return res.status(404).json({message:"Invalid email or pass"})
             }
