@@ -59,7 +59,23 @@ export const getProductById = async (req, res) => {
     if(!product) {
       return res.status(404).json({message:"Product not found"})
     }
-    return res.status(200).json(product);
+    const thumbnailUrl = cloudinary.url(product.thumbnail.public_id, {
+      type: "private",
+      sign_url: true,
+      expires_at: Math.floor(Date.now() / 1000) + 60
+    });
+    const imageUrls = product.images.map(img =>
+      cloudinary.url(img.public_id, {
+        type: "private",
+        sign_url: true,
+        expires_at: Math.floor(Date.now() / 1000) + 60
+      })
+    );
+    return res.status(200).json({
+      ...product._doc,
+      thumbnail: thumbnailUrl,
+      images: imageUrls
+    });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
