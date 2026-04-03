@@ -175,7 +175,29 @@ export const getByCategory = async(req,res) => {
     if(!products){
       return res.status(404).json({message:"Products not found under the category"})
     }
-    return res.json(products)
+    const updatedProducts = products.map(product => {
+
+      const thumbnailUrl = cloudinary.url(product.thumbnail.public_id, {
+        type: "private",
+        sign_url: true,
+        expires_at: Math.floor(Date.now() / 1000) + 60
+      });
+
+      const imageUrls = product.images.map(img =>
+        cloudinary.url(img.public_id, {
+          type: "private",
+          sign_url: true,
+          expires_at: Math.floor(Date.now() / 1000) + 60
+        })
+      );
+
+      return {
+        ...product._doc,
+        thumbnail: thumbnailUrl,
+        images: imageUrls
+      };
+    });
+    return res.json(updatedProducts)
   } catch (error) {
     return res.status(500).json({message:error.message})
   }
@@ -191,7 +213,30 @@ export const searchProducts = async (req, res) => {
         { category: { $regex: query, $options: "i" } }
       ]
     });
-    res.json(products);
+    const updatedProducts = products.map(product => {
+
+      const thumbnailUrl = cloudinary.url(product.thumbnail.public_id, {
+        type: "private",
+        sign_url: true,
+        expires_at: Math.floor(Date.now() / 1000) + 60
+      });
+
+      const imageUrls = product.images.map(img =>
+        cloudinary.url(img.public_id, {
+          type: "private",
+          sign_url: true,
+          expires_at: Math.floor(Date.now() / 1000) + 60
+        })
+      );
+
+      return {
+        ...product._doc,
+        thumbnail: thumbnailUrl,
+        images: imageUrls
+      };
+    });
+
+    return res.json(updatedProducts);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
