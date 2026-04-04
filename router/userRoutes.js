@@ -6,6 +6,7 @@ const router = express.Router();
 
 router.post("/signup",userController.signUp);
 router.post("/login",userController.login);
+router.post("/logout",authMiddleware,userController.logout)
 router.get("/wishlist",authMiddleware,userController.getWishlist);
 router.post("/wishlist/add",authMiddleware,userController.wishlistAdd);
 router.post("/wishlist/remove",authMiddleware,userController.wishlistRemove);
