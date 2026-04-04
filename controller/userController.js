@@ -88,16 +88,17 @@ export async function wishlistAdd(req,res) {
     }
 };
 
-export async function wishlistRemove(req,res) {
+
+export async function wishlistRemove(req, res) {
     try {
-        const userId= req.user.id;
-        const {productId} = req.body;
+        const userId = req.user.id;
+        const { productId } = req.body;
         const user = await userModel.findById(userId);
-        if(!user){
-            return res.status(404).message({message:"User not found"})
+        if (!user) {
+            return res.status(404).message({ message: "User not found" })
         }
         user.wishlist = user.wishlist.filter(
-            id=> id.toString() !== productId
+            id => id != null && id.toString() !== productId
         );
         await user.save();
         return res.json({
@@ -105,13 +106,11 @@ export async function wishlistRemove(req,res) {
             wishlist: user.wishlist
         })
 
-        
+
     } catch (error) {
-        return res.status(500).json({ message:error.message });
+        return res.status(500).json({ message: error.message });
     }
 }
-
-
 export async function getWishlist(req,res){
     try {
         const userId = req.user.id;
