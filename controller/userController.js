@@ -48,7 +48,7 @@ export const login = async(req,res) =>{
                 res.cookie("token", token, { httpOnly: true });
                 return res.status(200).json({message:"Logged in successfully",user: {
                 _id: user._id,
-                name: user.name,
+                name: user.fullname,
                 email: user.email
             }});
             }if(err){
@@ -108,5 +108,42 @@ export async function wishlistRemove(req,res) {
         
     } catch (error) {
         return res.status(500).json({ message:error.message });
+    }
+}
+
+
+export async function getWishlist(req,res){
+    try {
+        const userId = req.user.id;
+        const user = await userModel.findById(userId).populate("wishlist");
+        if(!user){
+            return res.status(404).json({ message: "User not found"});
+        }
+        const updatedWishlist = user.wishlist.map(product => {
+
+        const thumbnailUrl = cloudinary.url(product.thumbnail.public_id, {
+        type: "private",
+        sign_url: true,
+        expires_at: Math.floor(Date.now() / 1000) + 60
+      });
+
+        const imageUrls = product.images.map(img =>
+        cloudinary.url(img.public_id, {
+          type: "private",
+          sign_url: true,
+          expires_at: Math.floor(Date.now() / 1000) + 60
+        })
+      );
+
+        return {
+        ...product._doc,
+        thumbnail: thumbnailUrl,
+        images: imageUrls
+      };
+    });
+        return res.json(updatedWishlist);
+
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
     }
 }
