@@ -25,7 +25,11 @@ export const signUp = async (req,res) =>{
                     email,
                 })
                 let token = generateToken(user);
-                res.cookie("token", token, { httpOnly: true });
+                res.cookie("token", token, {
+                httpOnly: true,
+                 secure: true,        
+                 sameSite: "none"     
+                });
                 return res.status(201).json({message:"Successful the user has been created"})
             })
         })
@@ -45,7 +49,11 @@ export const login = async(req,res) =>{
         bcrypt.compare(password,user.password ,function(err,result){
             if(result){
                 let token = generateToken(user);
-                res.cookie("token", token, { httpOnly: true });
+                res.cookie("token", token, {
+                 httpOnly: true,
+                secure: true,        
+                 sameSite: "none"     
+                });
                 return res.status(200).json({message:"Logged in successfully",user: {
                 _id: user._id,
                 name: user.fullname,
