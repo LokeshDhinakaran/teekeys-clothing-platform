@@ -206,22 +206,30 @@ export const getByCategory = async(req,res) => {
 
 export const searchProducts = async (req, res) => {
   try {
-    const query = req.query.q;
+    const query = req.query.q?.trim();
+
+    if (!query) {
+      return res.status(400).json({ message: "Search query required" });
+    }
+    const fuzzyQuery = query.split("").join(".*");
+
     const products = await Products.find({
       $or: [
-        { title: { $regex: query, $options: "i" } },
-        { category: { $regex: query, $options: "i" } }
+        { title: { $regex: fuzzyQuery, $options: "i" } },
+        { description: { $regex: fuzzyQuery, $options: "i" } },
+        { brand: { $regex: fuzzyQuery, $options: "i" } },
+        { category: { $regex: fuzzyQuery, $options: "i" } } // optional
       ]
     });
-    const updatedProducts = products.map(product => {
 
+    const updatedProducts = products.map(product => {
       const thumbnailUrl = cloudinary.url(product.thumbnail.public_id, {
         type: "private",
         sign_url: true,
         expires_at: Math.floor(Date.now() / 1000) + 60
       });
 
-      const imageUrls = product.images.map(img =>
+      const imageUrls = (product.images || []).map(img =>
         cloudinary.url(img.public_id, {
           type: "private",
           sign_url: true,
@@ -237,7 +245,8 @@ export const searchProducts = async (req, res) => {
     });
 
     return res.json(updatedProducts);
+
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({ message: err.message });
   }
 };
