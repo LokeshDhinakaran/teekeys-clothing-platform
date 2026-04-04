@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import jwt from "jsonwebtoken";
 import userModel from "../models/user.js";
 import { generateToken } from "../middleware/generateToken.js";
+import cloudinary from "../config/cloudinary.js";
 
 export const signUp = async (req,res) =>{
     try {
