@@ -155,3 +155,15 @@ export async function getWishlist(req,res){
         return res.status(500).json({ message: error.message });
     }
 }
+
+
+export async function profile(req,res) {
+    try {
+        const userId = req.user.id;
+        const user = await userModel.findById(userId).select("-password");
+        return res.json(user)
+    } catch (error) {
+        return res.status(404).json(error)  
+    }
+
+}

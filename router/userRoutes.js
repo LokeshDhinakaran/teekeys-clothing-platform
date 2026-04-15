@@ -10,5 +10,6 @@ router.post("/logout",authMiddleware,userController.logout)
 router.get("/wishlist",authMiddleware,userController.getWishlist);
 router.post("/wishlist/add",authMiddleware,userController.wishlistAdd);
 router.post("/wishlist/remove",authMiddleware,userController.wishlistRemove);
+router.get("/profile",authMiddleware,userController.profile)
 
 export default router;
